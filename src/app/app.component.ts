@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 
 import * as moment from 'moment';
 
+interface Day {
+  day: string;
+  month: string;
+  date: string;
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,7 +18,7 @@ export class AppComponent implements OnInit {
   week: number; // 月週
   month: string; // 年月
 
-  d: string[][];
+  d: Day[][];
 
   ngOnInit(): void {
     moment.updateLocale('ja', {
@@ -46,10 +51,8 @@ export class AppComponent implements OnInit {
 
   calendar(month: number = 0) {
     this.month = moment().add(month, 'months').format('YYYY/MM');
-
     // 月頭の週頭を取得
     this.startDate = moment().add(month, 'months').startOf('month').startOf('isoWeek').format('YYYY-MM-DD'); // 計算するときのフォーマット
-
     //今月の月初と月末の日付を求める
     const startOfMonth = moment().add(month, 'months').startOf('month');
     const endOfMonth = moment().add(month, 'months').endOf('month');
@@ -62,11 +65,16 @@ export class AppComponent implements OnInit {
         endOfMonthOfWeekNum - startOfMonthOfWeekNum + 1: // 2月 ~ 12月
         endOfMonthOfWeekNum + 1;
     this.week = WeekNum;
-    const a: string[][] = [];
+    const a: Day[][] = [];
     for(let j=0; j < WeekNum; j++) {
-      const b: string[] = [];
+      const b: Day[] = [];
       for(let i=0; i<7; i++) {
-        b.push(moment(this.startDate).add(i + 7 * j, 'days').format('YYYY/MM/DD (dd)'));
+        const m = moment(this.startDate).add(i + 7 * j, 'days')
+        b.push({
+          day: m.format('D'),
+          month: m.format('YYYY/MM'),
+          date: m.format('YYYY/MM/DD')
+        });
       }
       a.push(b);
     }
@@ -81,15 +89,6 @@ export class AppComponent implements OnInit {
   nextMonth() {
     this.calendar(++this.monthNumber);
   }
-
-  callDate(m: number, n: number): string  {
-    return moment(this.startDate).add(m + 7 * n, 'days').format('D');
-  }
-
-  callDate2(m: number, n: number): string  {
-    return moment(this.startDate).add(m + 7 * n, 'days').format('YYYY/MM/DD');
-  }
-
   getDate(m: string) {
     console.log(m);
   }

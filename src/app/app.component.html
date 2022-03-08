@@ -13,7 +13,10 @@
   <span>日</span>
 </div>
 <div *ngFor="let n of week | range; index as i">
-  <span *ngFor="let m of 7 | range; index as j" (click)="getDate(callDate2(j, i))">
-    {{ callDate(j, i) }}
+  <ng-container *ngFor="let m of 7 | range; index as j">
+  <span (click)="getDate(d[i][j].date)" [ngClass]="d[i][j].month === month ? 'none' : 'gray'">
+    {{ d[i][j].day }}
   </span>
+  </ng-container>
 </div>
+
